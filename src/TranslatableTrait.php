@@ -8,14 +8,30 @@ trait TranslatableTrait
 {
   abstract protected function getTranslator(): Translator;
 
-  public function _($text, array $replacements = null): string
+  private static $replacements = [
+    '(s)'  => 's',
+    '(fe)' => 'ves',
+    '(o)'  => 'oes',
+  ];
+
+  public function _($msgId, $default, array $replacements = null, $choice = null): string
   {
-    return $this->getTranslator()->_($text, $replacements);
+    return $this->getTranslator()->_($msgId, $default, $replacements, $choice);
+  }
+
+  public function _t($text, array $replacements = null, $choice = null): string
+  {
+    return $this->getTranslator()->_(md5($text), $text, $replacements, $choice);
   }
 
   public function _p($singular, $plural, int $n, array $replacements = null): string
   {
-    return $this->getTranslator()->_p($singular, $plural, $n, $replacements);
+    return $this->getTranslator()->_(
+      md5($singular . $plural),
+      [1 => $singular, 'n..0,2..n' => $plural],
+      $replacements,
+      $n
+    );
   }
 
   /**
@@ -27,6 +43,15 @@ trait TranslatableTrait
    */
   public function _sp($simplePlural, int $n, array $replacements = null): string
   {
-    return $this->_p(str_replace('(s)', '', $simplePlural), str_replace('(s)', 's', $simplePlural), $n, $replacements);
+    return $this->_p(
+      str_replace(array_keys(static::$replacements), '', $simplePlural),
+      str_replace(
+        array_keys(static::$replacements),
+        array_values(static::$replacements),
+        $simplePlural
+      ),
+      $n,
+      $replacements
+    );
   }
 }

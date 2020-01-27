@@ -3,14 +3,9 @@ namespace Packaged\I18n\Translators;
 
 class ReverseTranslator extends AbstractTranslator
 {
-  public function _($text, array $replacements = null): string
+  public function _($msgId, $default, array $replacements = null, $choice = null): string
   {
-    return $this->_applyReplacements($this->_reverse($text), $replacements);
-  }
-
-  public function _p($singular, $plural, int $n, array $replacements = null): string
-  {
-    return $this->_applyReplacements($this->_reverse($n == 1 ? $singular : $plural), $replacements);
+    return $this->_applyReplacements($this->_reverse($this->_selectChoice($default, $choice)), $replacements);
   }
 
   protected function _reverse($text)

@@ -3,7 +3,13 @@ namespace Packaged\I18n;
 
 interface Translatable
 {
-  public function _($text, array $replacements = null): string;
-
-  public function _p($singular, $plural, int $n, array $replacements = null): string;
+  /**
+   * @param string       $msgId        Message ID to translate
+   * @param string|array $default      Default text to display, or options to select
+   * @param array|null   $replacements string replacements '{arrayKey}'
+   * @param null         $choice       e.g. quantity, gender
+   *
+   * @return string
+   */
+  public function _($msgId, $default, array $replacements = null, $choice = null): string;
 }

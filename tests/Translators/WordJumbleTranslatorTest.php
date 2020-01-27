@@ -15,20 +15,23 @@ class WordJumbleTranslatorTest extends TestCase
 
   public function testShuffle()
   {
-    $translator = new WordJumbleTranslator(WordJumbleTranslator::STYLE_SHUFFLE);
-    $this->assertNotEquals("abcdefghiklmnopqrstvxyz", $translator->_("abcdefghiklmnopqrstvxyz"));
+    $class = $this->_getTester();
+    $class->setTranslator(new WordJumbleTranslator(WordJumbleTranslator::STYLE_SHUFFLE));
+    $this->assertNotEquals("abcdefghiklmnopqrstvxyz", $class->_t("abcdefghiklmnopqrstvxyz"));
   }
 
   public function testRsort()
   {
-    $translator = new WordJumbleTranslator(WordJumbleTranslator::STYLE_RSORT);
-    $this->assertEquals("ayxvtsrqponmlkihgfedcbz", $translator->_("abcdefghiklmnopqrstvxyz"));
+    $class = $this->_getTester();
+    $class->setTranslator(new WordJumbleTranslator(WordJumbleTranslator::STYLE_RSORT));
+    $this->assertEquals("ayxvtsrqponmlkihgfedcbz", $class->_t("abcdefghiklmnopqrstvxyz"));
   }
 
   public function testSort()
   {
-    $translator = new WordJumbleTranslator(WordJumbleTranslator::STYLE_SORT);
-    $this->assertEquals("zbcdefghiklmnopqrstvxya", $translator->_("zyxvtsrqponmlkihgfedcba"));
+    $class = $this->_getTester();
+    $class->setTranslator(new WordJumbleTranslator(WordJumbleTranslator::STYLE_SORT));
+    $this->assertEquals("zbcdefghiklmnopqrstvxya", $class->_t("zyxvtsrqponmlkihgfedcba"));
   }
 
   public function test_p()
@@ -51,9 +54,9 @@ class WordJumbleTranslatorTest extends TestCase
     $this->assertEquals('You hvae 3 flies', $class->_sp($msg, 3, ['fileCount' => 3]));
   }
 
-  public function test_()
+  public function test_t()
   {
     $class = $this->_getTester();
-    $this->assertEquals('Hlleo John', $class->_('Hello {name}', ['name' => 'John']));
+    $this->assertEquals('Hlleo John', $class->_t('Hello {name}', ['name' => 'John']));
   }
 }

@@ -14,14 +14,9 @@ class WordJumbleTranslator extends AbstractTranslator
     $this->_style = $style;
   }
 
-  public function _($text, array $replacements = null): string
+  public function _($msgId, $default, array $replacements = null, $choice = null): string
   {
-    return $this->_applyReplacements($this->_jumble($text), $replacements);
-  }
-
-  public function _p($singular, $plural, int $n, array $replacements = null): string
-  {
-    return $this->_applyReplacements($this->_jumble($n == 1 ? $singular : $plural), $replacements);
+    return $this->_applyReplacements($this->_jumble($this->_selectChoice($default, $choice)), $replacements);
   }
 
   protected function _jumble($text)

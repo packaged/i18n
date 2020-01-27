@@ -33,9 +33,9 @@ class ReverseTranslatorTest extends TestCase
     $this->assertEquals('uoY evah 3 selif', $class->_sp($msg, 3, ['fileCount' => 3]));
   }
 
-  public function test_()
+  public function test_t()
   {
     $class = $this->_getTester();
-    $this->assertEquals('olleH John', $class->_('Hello {name}', ['name' => 'John']));
+    $this->assertEquals('olleH John', $class->_t('Hello {name}', ['name' => 'John']));
   }
 }

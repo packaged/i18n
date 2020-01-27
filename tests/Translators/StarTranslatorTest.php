@@ -32,9 +32,9 @@ class StarTranslatorTest extends TestCase
     $this->assertEquals('*** **** 3 *****', $class->_sp($msg, 3, ['fileCount' => 3]));
   }
 
-  public function test_()
+  public function test_t()
   {
     $class = $this->_getTester();
-    $this->assertEquals('***** John', $class->_('Hello {name}', ['name' => 'John']));
+    $this->assertEquals('***** John', $class->_t('Hello {name}', ['name' => 'John']));
   }
 }
