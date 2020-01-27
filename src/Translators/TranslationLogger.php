@@ -36,7 +36,7 @@ class TranslationLogger implements Translator
       $this->_translations[$msgId][static::KEY_CHOICES][] = $choice;
     }
 
-    return $this->_($msgId, $default, $replacements, $choice);
+    return $this->_translator->_($msgId, $default, $replacements, $choice);
   }
 
   public function getTranslations()
