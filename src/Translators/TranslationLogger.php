@@ -7,6 +7,7 @@ class TranslationLogger implements Translator
   protected $_translations;
 
   const KEY_USAGES = 'usages';
+  const KEY_DEFAULT = 'default';
   const KEY_CHOICES = 'choices';
   const KEY_REPLACEMENTS = 'replacements';
 
@@ -23,6 +24,7 @@ class TranslationLogger implements Translator
         static::KEY_USAGES       => 0,
         static::KEY_CHOICES      => [],
         static::KEY_REPLACEMENTS => false,
+        static::KEY_DEFAULT      => $default,
       ];
     }
 
