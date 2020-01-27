@@ -39,6 +39,21 @@ class ReplacementsOnlyTranslatorTest extends TestCase
     $this->assertEquals(123, $class->_($mid, 123, ['fileCount' => 0], 0));
   }
 
+  public function test_options()
+  {
+    $class = $this->_getTester();
+    $mid = 'gen';
+    $opts = [
+      'male'   => '{person} has invited you to his party!',
+      'female' => '{person} has invited you to her party!',
+      'other'  => '{person} has invited you to their party!',
+    ];
+
+    $this->assertEquals('Bob has invited you to his party!', $class->_($mid, $opts, ['person' => 'Bob'], 'male'));
+    $this->assertEquals('Jane has invited you to her party!', $class->_($mid, $opts, ['person' => 'Jane'], 'female'));
+    $this->assertEquals('Kai has invited you to their party!', $class->_($mid, $opts, ['person' => 'Kai'], 'other'));
+  }
+
   public function test_p()
   {
     $class = $this->_getTester();

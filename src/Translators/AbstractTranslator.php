@@ -59,7 +59,7 @@ abstract class AbstractTranslator implements Translator
 
     foreach(explode(',', $optionKey) as $key)
     {
-      if($key === $choice || $key === 'n')
+      if($key === $choice || ($key === 'n' && is_numeric($choice)))
       {
         return true;
       }
