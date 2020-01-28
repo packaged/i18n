@@ -4,7 +4,7 @@ namespace Packaged\I18n\Translators;
 class TranslationLogger implements Translator
 {
   protected $_translator;
-  protected $_translations;
+  protected $_translations = [];
 
   const KEY_USAGES = 'usages';
   const KEY_DEFAULT = 'default';
