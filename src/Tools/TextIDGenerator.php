@@ -20,6 +20,6 @@ class TextIDGenerator
 
     $shortText = preg_replace('/[^\w]+/', '_', $text1);
     return strtolower(trim(substr($shortText, 0, $this->_prefixLength), '_')) .
-      ($this->_appendBaseTime ? '_' . base_convert(time(), 10, 36) : '');
+      ($this->_appendBaseTime && str_word_count($text) > 3 ? '_' . base_convert(time(), 10, 36) : '');
   }
 }
