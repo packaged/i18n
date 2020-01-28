@@ -10,10 +10,19 @@ class ArrayCatalog implements MessageCatalog
 
   protected $_data;
 
+  /**
+   * ArrayCatalog constructor.
+   *
+   * @param $_data
+   */
+  public function __construct($_data)
+  {
+    $this->_data = $_data;
+  }
+
   public static function fromFile($filePath)
   {
-    $cat = new static();
-    $cat->_data = include($filePath);
+    $cat = new static(include($filePath));
     return $cat;
   }
 

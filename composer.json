@@ -13,7 +13,11 @@
     "packaged/helpers": "~1.0||^2.0"
   },
   "require-dev": {
+    "ext-gettext": "*",
     "phpunit/phpunit": "~8.0"
+  },
+  "suggest": {
+    "ext-gettext": "*"
   },
   "autoload": {
     "psr-4": {
