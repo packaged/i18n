@@ -1,6 +1,8 @@
 <?php
 namespace Packaged\I18n\Translators;
 
+use Packaged\I18n\Catalog\Message;
+
 class StarTranslator extends AbstractTranslator
 {
   const CHAR_STAR = '*';
@@ -15,7 +17,10 @@ class StarTranslator extends AbstractTranslator
 
   public function _($msgId, $default, array $replacements = null, $choice = null): string
   {
-    return $this->_applyReplacements($this->_applyStars($this->_selectChoice($default, $choice)), $replacements);
+    return $this->_applyReplacements(
+      $this->_applyStars(Message::create(null, $default)->getText($choice)),
+      $replacements
+    );
   }
 
   protected function _applyStars($text)
