@@ -1,33 +1,50 @@
 <?php
 namespace Packaged\I18n\Catalog;
 
-use Packaged\I18n\Translators\Translator;
-
 class Message
 {
-  protected $_text;
+  const DEFAULT_OPTION = '_';
+
   /**
-   * @var array|string
+   * @var array
    */
   protected $_options;
-  protected $_scalarOptions = false;
+
   protected $_choice;
   protected $_choiceNumeric;
 
-  public function __construct(?string $text, $options = null)
+  public function addOption($key, $value)
   {
-    $this->_scalarOptions = is_scalar($options);
-    if(!$this->_scalarOptions && !is_array($options))
-    {
-      throw new \Exception("Message Options must be either string or array");
-    }
-    $this->_text = $text;
+    $this->_options[$key] = $value;
+    return $this;
+  }
+
+  public function __construct(array $options = [])
+  {
     $this->_options = $options;
   }
 
-  public static function create(?string $text, $options = null)
+  public static function fromDefault($default)
   {
-    return new static($text, $options);
+    if(is_array($default))
+    {
+      return new static($default);
+    }
+    $msg = new static();
+    if(is_scalar($default))
+    {
+      $matches = [];
+      preg_match_all('/((\[[^\]]+\])?([^\|]+))+/m', $default, $matches);
+      if(isset($matches[3]))
+      {
+        foreach($matches[2] as $i => $key)
+        {
+          $key = empty($key) ? self::DEFAULT_OPTION : substr($key, 1, -1);
+          $msg->addOption($key, $matches[3][$i]);
+        }
+      }
+    }
+    return $msg;
   }
 
   protected function _setChoice($choice = null)
@@ -47,35 +64,21 @@ class Message
   public function getText($choice = null): string
   {
     $this->_setChoice($choice);
-    return $choice === null && $this->_text ? $this->_text : $this->_selectChoice();
-  }
-
-  protected function _convertStringOptions()
-  {
-    if($this->_scalarOptions)
-    {
-      $matches = [];
-      preg_match_all('/((\[[^\]]+\])?([^\|]+))+/m', $this->_options, $matches);
-      if(isset($matches[3]))
-      {
-        foreach($matches[2] as $i => $key)
-        {
-          $key = empty($key) ? Translator::DEFAULT_OPTION : substr($key, 1, -1);
-          yield $key => $matches[3][$i];
-        }
-      }
-    }
-    return null;
+    return $this->_selectChoice();
   }
 
   protected function _selectChoice(): string
   {
     $return = '';
-    foreach($this->_scalarOptions ? $this->_convertStringOptions() : $this->_options as $key => $v)
+    foreach($this->_options as $key => $v)
     {
-      if($key === Translator::DEFAULT_OPTION)
+      if($key === self::DEFAULT_OPTION)
       {
         $return = $v;
+        if($this->_choice === null)
+        {
+          return $return;
+        }
       }
       else if($this->_choiceMatches($key))
       {

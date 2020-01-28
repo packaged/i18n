@@ -15,11 +15,12 @@ class ArrayCatalogTest extends TestCase
 
     $this->assertNull($catalog->getMessage('missingid'));
 
+    $this->assertEquals('Mr Lazy', $catalog->getMessage('lazy_translator')->getText());
+
     $msg = $catalog->getMessage('rand_mid');
     $this->assertInstanceOf(Message::class, $msg);
 
-    $this->assertEquals('Random Text', $msg->getText());
-
+    $this->assertEquals('Default Text', $msg->getText());
     $this->assertEquals('Default Text', $msg->getText('horse'));
     $this->assertEquals('No Random Things', $msg->getText(0));
     $this->assertEquals('One Random Thing', $msg->getText(1));

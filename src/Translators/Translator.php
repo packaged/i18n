@@ -5,5 +5,4 @@ use Packaged\I18n\Translatable;
 
 interface Translator extends Translatable
 {
-  const DEFAULT_OPTION = '_';
 }

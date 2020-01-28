@@ -21,7 +21,7 @@ class CatalogTranslator extends AbstractTranslator
     $msg = $this->_catalog->getMessage($msgId);
     if($msg === null)
     {
-      $msg = Message::create(null, $default);
+      $msg = Message::fromDefault($default);
     }
     return $this->_applyReplacements($msg->getText($choice), $replacements);
   }

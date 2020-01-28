@@ -8,12 +8,9 @@ class DynamicArrayCatalog extends ArrayCatalog
     return $this->_data;
   }
 
-  public function addMessage($messageId, $text, array $options = [])
+  public function addMessage($messageId, array $options = [])
   {
-    $this->_data[$messageId] = [
-      self::KEY_TEXT    => $text,
-      self::KEY_OPTIONS => $options,
-    ];
+    $this->_data[$messageId] = $options;
     return $this;
   }
 }

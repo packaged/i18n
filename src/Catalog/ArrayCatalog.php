@@ -1,12 +1,8 @@
 <?php
 namespace Packaged\I18n\Catalog;
 
-use Packaged\I18n\Translators\Translator;
-
 class ArrayCatalog implements MessageCatalog
 {
-  const KEY_TEXT = 'msgstr';
-  const KEY_OPTIONS = 'msgopt';
 
   protected $_data;
 
@@ -30,11 +26,11 @@ class ArrayCatalog implements MessageCatalog
   {
     if(isset($this->_data[$messageId]))
     {
-      $text = $this->_data[$messageId][self::KEY_TEXT] ?? null;
-      return Message::create(
-        $text,
-        $this->_data[$messageId][self::KEY_OPTIONS] ?? [Translator::DEFAULT_OPTION => $text]
-      );
+      if(!is_array($this->_data[$messageId]))
+      {
+        $this->_data[$messageId] = [Message::DEFAULT_OPTION => $this->_data[$messageId]];
+      }
+      return new Message($this->_data[$messageId]);
     }
     return null;
   }

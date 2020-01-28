@@ -7,6 +7,6 @@ class ReplacementsOnlyTranslator extends AbstractTranslator
 {
   public function _($msgId, $default, array $replacements = null, $choice = null): string
   {
-    return $this->_applyReplacements(Message::create(null, $default)->getText($choice), $replacements);
+    return $this->_applyReplacements(Message::fromDefault($default)->getText($choice), $replacements);
   }
 }
