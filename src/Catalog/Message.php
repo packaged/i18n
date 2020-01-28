@@ -13,12 +13,6 @@ class Message
   protected $_choice;
   protected $_choiceNumeric;
 
-  public function addOption($key, $value)
-  {
-    $this->_options[$key] = $value;
-    return $this;
-  }
-
   public function __construct(array $options = [])
   {
     $this->_options = $options;
@@ -45,6 +39,17 @@ class Message
       }
     }
     return $msg;
+  }
+
+  public function addOption($key, $value)
+  {
+    $this->_options[$key] = $value;
+    return $this;
+  }
+
+  public function getOptions()
+  {
+    return $this->_options;
   }
 
   protected function _setChoice($choice = null)
