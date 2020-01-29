@@ -4,6 +4,12 @@ namespace Packaged\I18n\Tools\Gettext;
 class PoFile
 {
   protected $_language;
+  protected $_headers = [
+    'MIME - Version'            => '1.0',
+    'Content-Type'              => 'text/plain; charset=UTF-8',
+    'Content-Transfer-Encoding' => '8bit',
+    'X-Generator'               => 'Packaged I18n 1.0',
+  ];
 
   /**
    * @var PoTranslation[]
@@ -12,7 +18,14 @@ class PoFile
 
   public function __construct($language = null)
   {
-    $this->_language = $language;
+    $this->_setLanguage($language);
+  }
+
+  protected function _setLanguage($lang)
+  {
+    $this->_language = $lang;
+    $this->_headers['Language'] = $this->_language;
+    return $this;
   }
 
   public function addTranslation(PoTranslation ...$translations)
@@ -29,14 +42,12 @@ class PoFile
     $file = [];
     $file[] = 'msgid ""';
     $file[] = 'msgstr ""';
-    $file[] = '"MIME-Version: 1.0\n"';
-    $file[] = '"Content-Type: text/plain; charset=UTF-8\n"';
-    $file[] = '"Content-Transfer-Encoding: 8bit\n"';
-    if($this->_language)
+
+    foreach($this->_headers as $hk => $hv)
     {
-      $file[] = '"Language: ' . $this->_language . '\n"';
+      $file[] = '"' . $hk . ': ' . $hv . '\n"';
     }
-    $file[] = '"X-Generator: Packaged I18n 1.0\n"';
+
     $file[] = '';
 
     foreach($this->_translations as $translation)
@@ -58,10 +69,25 @@ class PoFile
     }
     foreach($translations as $translation)
     {
-      $converted = PoTranslation::fromString(trim($translation));
-      if($converted !== null)
+      if(substr($translation, 0, 18) == 'msgid ""' . "\n" . 'msgstr ""')
       {
-        $trans->addTranslation($converted);
+        $trans->_headers = [];
+        $headers = explode("\n", substr($translation, 18));
+        foreach($headers as $header)
+        {
+          $header = trim($header, '"');
+          [$hk, $hv] = explode(':', substr($header, -2) == '\n' ? substr($header, 0, -2) : $header, 2);
+          $trans->_headers[$hk] = trim($hv);
+        }
+        $trans->_headers = array_filter($trans->_headers);
+      }
+      else
+      {
+        $converted = PoTranslation::fromString(trim($translation));
+        if($converted !== null)
+        {
+          $trans->addTranslation($converted);
+        }
       }
     }
     return $trans;
