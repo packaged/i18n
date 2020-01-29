@@ -22,4 +22,9 @@ class TextIDGenerator
     return strtolower(trim(substr($shortText, 0, $this->_prefixLength), '_')) .
       ($this->_appendBaseTime && str_word_count($text) > 3 ? '_' . base_convert(time(), 10, 36) : '');
   }
+
+  public static function generate($text)
+  {
+    return (new static())->generateId($text);
+  }
 }
