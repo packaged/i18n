@@ -52,7 +52,7 @@ class PoFile
 
     foreach($this->_translations as $translation)
     {
-      $file = array_merge($file, $translation->getContent());
+      $file = array_merge($file, [''], $translation->getContent());
     }
 
     return implode(PHP_EOL, $file);
