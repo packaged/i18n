@@ -6,7 +6,7 @@ use Packaged\I18n\Translators\Translator;
 
 trait TranslatableTrait
 {
-  abstract protected function getTranslator(): Translator;
+  abstract protected function _getTranslator(): Translator;
 
   private static $replacements = [
     '(s)'  => 's',
@@ -16,17 +16,17 @@ trait TranslatableTrait
 
   public function _($msgId, $default, array $replacements = null, $choice = null): string
   {
-    return $this->getTranslator()->_($msgId, $default, $replacements, $choice);
+    return $this->_getTranslator()->_($msgId, $default, $replacements, $choice);
   }
 
   public function _t($text, array $replacements = null, $choice = null): string
   {
-    return $this->getTranslator()->_(md5($text), $text, $replacements, $choice);
+    return $this->_getTranslator()->_(md5($text), $text, $replacements, $choice);
   }
 
   public function _p($singular, $plural, int $n, array $replacements = null): string
   {
-    return $this->getTranslator()->_(
+    return $this->_getTranslator()->_(
       md5($singular . $plural),
       [1 => $singular, 'n..0,2..n' => $plural],
       $replacements,
