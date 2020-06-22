@@ -96,8 +96,11 @@ class PoFile
         foreach($headers as $header)
         {
           $header = trim($header, '"');
-          [$hk, $hv] = explode(':', substr($header, -2) == '\n' ? substr($header, 0, -2) : $header, 2);
-          $trans->_headers[$hk] = trim($hv);
+          if($header)
+          {
+            [$hk, $hv] = explode(':', substr($header, -2) == '\n' ? substr($header, 0, -2) : $header, 2);
+            $trans->_headers[$hk] = trim($hv);
+          }
         }
         $trans->_headers = array_filter($trans->_headers);
       }
