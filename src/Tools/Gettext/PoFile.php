@@ -5,7 +5,7 @@ class PoFile
 {
   protected $_language;
   protected $_headers = [
-    'MIME - Version'            => '1.0',
+    'MIME-Version'              => '1.0',
     'Content-Type'              => 'text/plain; charset=UTF-8',
     'Content-Transfer-Encoding' => '8bit',
     'X-Generator'               => 'Packaged I18n 1.0',
@@ -21,11 +21,21 @@ class PoFile
     $this->_setLanguage($language);
   }
 
+  public function getHeaders()
+  {
+    return $this->_headers;
+  }
+
   protected function _setLanguage($lang)
   {
     $this->_language = $lang;
     $this->_headers['Language'] = $this->_language;
     return $this;
+  }
+
+  public function getLanguage()
+  {
+    return $this->_language;
   }
 
   public function addTranslation(PoTranslation ...$translations)
@@ -35,6 +45,16 @@ class PoFile
       $this->_translations[$translation->getId()] = $translation;
     }
     return $this;
+  }
+
+  public function getTranslation($id): ?PoTranslation
+  {
+    return $this->_translations[$id] ?? null;
+  }
+
+  public function getTranslations()
+  {
+    return $this->_translations;
   }
 
   public function __toString()
