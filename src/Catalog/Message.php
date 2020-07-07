@@ -4,6 +4,7 @@ namespace Packaged\I18n\Catalog;
 class Message
 {
   const DEFAULT_OPTION = '_';
+  const META_OPTION = '__meta';
 
   /**
    * @var array
@@ -39,6 +40,11 @@ class Message
       }
     }
     return $msg;
+  }
+
+  public function getMeta(): array
+  {
+    return $this->_options[self::META_OPTION] ?? [];
   }
 
   public function addOption($key, $value)

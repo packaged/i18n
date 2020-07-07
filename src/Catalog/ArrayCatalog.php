@@ -18,8 +18,7 @@ class ArrayCatalog implements MessageCatalog
 
   public static function fromFile($filePath)
   {
-    $cat = new static(include($filePath));
-    return $cat;
+    return new static(include($filePath));
   }
 
   public function getMessage($messageId): ?Message
