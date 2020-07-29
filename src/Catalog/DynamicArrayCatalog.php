@@ -14,9 +14,10 @@ class DynamicArrayCatalog extends ArrayCatalog
     return $this;
   }
 
-  public function asPhpFile(): string
+  public function asPhpFile($withNewLines = false): string
   {
-    $indent = $implode = '';
+    $indent = $withNewLines ? '  ' : '';
+    $implode = $withNewLines ? PHP_EOL : '';
 
     $content = ['<?php', PHP_EOL, 'return ['];
 
@@ -30,7 +31,6 @@ class DynamicArrayCatalog extends ArrayCatalog
       $content[] = '],';
     }
     $content[] = '];';
-    $content[] = '';
-    return implode($implode, $content);
+    return implode($implode, $content) . PHP_EOL;
   }
 }
