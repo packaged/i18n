@@ -18,9 +18,8 @@ class TextIDGenerator
       $text1 = $text;
     }
 
-    $shortText = preg_replace('/[^\w]+/', '_', $text1);
-    return strtolower(trim(substr($shortText, 0, $this->_prefixLength), '_')) .
-      ($this->_appendBaseTime && str_word_count($text) > 3 ? '_' . base_convert(time(), 10, 36) : '');
+    return strtolower(trim(substr(preg_replace('/[^\w]+/', '_', $text1), 0, $this->_prefixLength), '_')) . '_' .
+      ($this->_appendBaseTime && str_word_count($text) > 3 ? base_convert(time(), 10, 36) : substr(md5($text), 0, 4));
   }
 
   public static function generate($text)
