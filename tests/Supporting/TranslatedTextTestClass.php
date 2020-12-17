@@ -27,7 +27,7 @@ class TranslatedTextTestClass implements Translatable
     return $this;
   }
 
-  protected function _getTranslator(): Translatable
+  protected function _getTranslator(): Translator
   {
     return $this->_translator;
   }

@@ -3,6 +3,11 @@ namespace Packaged\I18n\Catalog;
 
 class DynamicArrayCatalog extends ArrayCatalog
 {
+  /**
+   * @var callable
+   */
+  protected $_translateCallback;
+
   public function getData()
   {
     return $this->_data;
@@ -21,16 +26,33 @@ class DynamicArrayCatalog extends ArrayCatalog
 
     $content = ['<?php', PHP_EOL, 'return ['];
 
+    $callback = $this->_translateCallback;
+
     foreach($this->getData() as $mid => $options)
     {
-      $content[] = $indent . "'" . addslashes($mid) . "' => [";
+      $content[] = $indent . "'" . addcslashes(stripslashes($mid), "'") . "' => [";
       foreach($options as $optK => $text)
       {
-        $content[] = $indent . $indent . "'" . addslashes($optK) . "' => '" . addslashes($text) . "',";
+        $useText = $callback ? $callback($text) : $text;
+        $content[] = $indent . $indent
+          . "'" . addcslashes(stripslashes($optK), "'") . "' => '" . addcslashes(stripslashes($useText), "'") . "',";
       }
       $content[] = '],';
     }
     $content[] = '];';
     return implode($implode, $content) . PHP_EOL;
+  }
+
+  /**
+   * Process text through this callback when generating the php file
+   *
+   * @param callable $func
+   *
+   * @return $this
+   */
+  public function setTranslationCallback(callable $func)
+  {
+    $this->_translateCallback = $func;
+    return $this;
   }
 }

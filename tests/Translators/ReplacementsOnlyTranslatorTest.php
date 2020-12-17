@@ -80,4 +80,11 @@ class ReplacementsOnlyTranslatorTest extends TestCase
     $this->assertEquals('Hello John', $class->_t('Hello {name}', ['name' => 'John']));
     $this->assertEquals('Hello {name}', $class->_t('Hello {name}', []));
   }
+
+  public function testQuotes()
+  {
+    $class = $this->_getTester();
+    $string = 'Test for a quoted \'string\' in the middle and the \'end\'';
+    $this->assertEquals($string, $class->_('test_quoted_string_middle_qlhd63', $string));
+  }
 }
