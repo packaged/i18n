@@ -86,7 +86,7 @@ class PoTranslation
 
   protected function _slash($text)
   {
-    $text = trim(addcslashes($text, '""'));
+    $text = trim(addcslashes(stripslashes($text), '"'));
     if(strpos($text, "\n") > 0)
     {
       return '"' . "\n" . implode('"\n"', explode("\n", $text));
@@ -137,7 +137,10 @@ class PoTranslation
         {
           [$currentCode, $content] = explode(" ", $line, 2);
         }
-        $append = trim($content, '"') . PHP_EOL;
+        $append = trim($content);
+        $starts = $append[0] === '"';
+        $ends = $append[strlen($append) - 1] === '"';
+        $append = substr($append, $starts ? 1 : 0, $ends ? -1 : null) . PHP_EOL;
         switch($currentCode)
         {
           case 'msgid':
@@ -389,5 +392,4 @@ class PoTranslation
     $this->_additionalPluralTranslations = $additionalPluralTranslations;
     return $this;
   }
-
 }
