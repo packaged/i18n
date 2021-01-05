@@ -38,14 +38,17 @@ class PoTranslation
     {
       $lines[] = '# ' . $comment;
     }
+
     foreach($this->_extractedComments as $comment)
     {
       $lines[] = '#. ' . $comment;
     }
-    foreach($this->_references as $reference)
+
+    if(!empty($this->_references))
     {
-      $lines[] = '#: ' . $reference;
+      $lines[] = '#: ' . implode(' ', $this->_references);
     }
+
     foreach($this->_flags as $flag)
     {
       $lines[] = '#, ' . $flag;
@@ -117,7 +120,7 @@ class PoTranslation
             $translation->_extractedComments[] = trim(substr($line, 2));
             break;
           case ':':
-            $translation->_references[] = trim(substr($line, 2));
+            $translation->_references = array_merge($translation->_references, explode(' ', trim(substr($line, 2))));
             break;
           case ',':
             $flag = trim(substr($line, 2));
