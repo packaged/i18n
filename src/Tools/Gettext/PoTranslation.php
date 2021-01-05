@@ -5,11 +5,14 @@ use Packaged\I18n\Tools\TextIDGenerator;
 
 class PoTranslation
 {
-  protected $_id;
+  const FLAG_FUZZY = 'fuzzy';
+
+  protected $_previous = [];
+  protected $_id = '';
   protected $_comments = [];
-  protected $_developerComments = [];
-  protected $_translatorComments = [];
-  protected $_needsWork = false;
+  protected $_flags = [];
+  protected $_references = [];
+  protected $_extractedComments = [];
   protected $_context = '';
   protected $_singularSource = '';
   protected $_pluralSource = '';
@@ -35,17 +38,21 @@ class PoTranslation
     {
       $lines[] = '# ' . $comment;
     }
-    foreach($this->_translatorComments as $comment)
+    foreach($this->_extractedComments as $comment)
     {
       $lines[] = '#. ' . $comment;
     }
-    foreach($this->_developerComments as $comment)
+    foreach($this->_references as $reference)
     {
-      $lines[] = '#: ' . $comment;
+      $lines[] = '#: ' . $reference;
     }
-    if($this->_needsWork)
+    foreach($this->_flags as $flag)
     {
-      $lines[] = '#, fuzzy';
+      $lines[] = '#, ' . $flag;
+    }
+    foreach($this->_previous as $previous => $previousValue)
+    {
+      $lines[] = '#| ' . $previous . ' ' . $previousValue;
     }
 
     if($this->_context)
@@ -107,18 +114,18 @@ class PoTranslation
         switch($line[1])
         {
           case '.':
-            $translation->_translatorComments[] = trim(substr($line, 2));
+            $translation->_extractedComments[] = trim(substr($line, 2));
             break;
           case ':':
-            $translation->_developerComments[] = trim(substr($line, 2));
+            $translation->_references[] = trim(substr($line, 2));
             break;
           case ',':
-            switch(trim(substr($line, 2)))
-            {
-              case 'fuzzy':
-                $translation->_needsWork = true;
-                break;
-            }
+            $flag = trim(substr($line, 2));
+            $translation->_flags[$flag] = $flag;
+            break;
+          case '|':
+            [$key, $value] = explode(' ', trim(substr($line, 2)), 2);
+            $translation->_previous[$key] = $value;
             break;
           case ' ':
           default:
@@ -183,9 +190,9 @@ class PoTranslation
       $translation->_additionalPluralTranslations[$k] = rtrim($v);
     }
 
-    if(!empty($translation->_developerComments))
+    if(!empty($translation->_references))
     {
-      $translation->_id = $translation->_developerComments[0];
+      $translation->_id = $translation->_references[0];
     }
 
     if(empty($translation->_id) && $translation->_singularSource)
@@ -225,9 +232,9 @@ class PoTranslation
   /**
    * @return array
    */
-  public function getDeveloperComments(): array
+  public function getReferences(): array
   {
-    return $this->_developerComments;
+    return $this->_references;
   }
 
   /**
@@ -235,18 +242,18 @@ class PoTranslation
    *
    * @return PoTranslation
    */
-  public function setDeveloperComments(array $developerComments): PoTranslation
+  public function setReferences(array $developerComments): PoTranslation
   {
-    $this->_developerComments = $developerComments;
+    $this->_references = $developerComments;
     return $this;
   }
 
   /**
    * @return array
    */
-  public function getTranslatorComments(): array
+  public function getExtractedComments(): array
   {
-    return $this->_translatorComments;
+    return $this->_extractedComments;
   }
 
   /**
@@ -254,9 +261,9 @@ class PoTranslation
    *
    * @return PoTranslation
    */
-  public function setTranslatorComments(array $translatorComments): PoTranslation
+  public function setExtractedComments(array $translatorComments): PoTranslation
   {
-    $this->_translatorComments = $translatorComments;
+    $this->_extractedComments = $translatorComments;
     return $this;
   }
 
@@ -265,7 +272,7 @@ class PoTranslation
    */
   public function needsWork(): bool
   {
-    return $this->_needsWork;
+    return isset($this->_flags[self::FLAG_FUZZY]);
   }
 
   /**
@@ -275,8 +282,33 @@ class PoTranslation
    */
   public function setNeedsWork(bool $needsWork): PoTranslation
   {
-    $this->_needsWork = $needsWork;
+    if($needsWork)
+    {
+      return $this->setFlag(self::FLAG_FUZZY);
+    }
+    return $this->removeFlag(self::FLAG_FUZZY);
+  }
+
+  public function setFlag(string $flag): PoTranslation
+  {
+    $this->_flags[$flag] = $flag;
     return $this;
+  }
+
+  public function removeFlag(string $flag): PoTranslation
+  {
+    unset($this->_flags[$flag]);
+    return $this;
+  }
+
+  public function hasFlag(string $flag): bool
+  {
+    return isset($this->_flags[$flag]);
+  }
+
+  public function getFlags(): array
+  {
+    return $this->_flags;
   }
 
   /**
@@ -392,4 +424,5 @@ class PoTranslation
     $this->_additionalPluralTranslations = $additionalPluralTranslations;
     return $this;
   }
+
 }
