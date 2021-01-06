@@ -5,7 +5,7 @@ class TextIDGenerator
 {
   protected $_minWord = 3;
   protected $_prefixLength = 30;
-  protected $_appendBaseTime = true;
+  protected $_appendBaseTime = false;
 
   public function generateId($text)
   {
@@ -18,8 +18,10 @@ class TextIDGenerator
       $text1 = $text;
     }
 
+    $long = str_word_count($text) > 3;
     return strtolower(trim(substr(preg_replace('/[^\w]+/', '_', $text1), 0, $this->_prefixLength), '_')) . '_' .
-      ($this->_appendBaseTime && str_word_count($text) > 3 ? base_convert(time(), 10, 36) : substr(md5($text), 0, 4));
+      ($this->_appendBaseTime && $long ?
+        base_convert(time(), 10, 36) : substr(md5($text), 0, $long ? 6 : 4) . ($long ? '_' . strlen($text) : ''));
   }
 
   public static function generate($text)
