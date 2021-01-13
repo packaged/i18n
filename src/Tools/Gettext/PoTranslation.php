@@ -99,7 +99,7 @@ class PoTranslation
     $text = trim(addcslashes(stripslashes($text), '"'));
     if(strpos($text, "\n") > 0)
     {
-      return '"' . "\n" . implode('"\n"', explode("\n", $text));
+      return implode('"' . PHP_EOL . '"', explode("\n", $text));
     }
     return $text;
   }
