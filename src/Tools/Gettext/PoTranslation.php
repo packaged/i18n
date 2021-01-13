@@ -114,6 +114,10 @@ class PoTranslation
       $line = trim($line);
       if($line[0] == '#')
       {
+        if(!isset($line[1]))
+        {
+          continue;
+        }
         switch($line[1])
         {
           case '.':
