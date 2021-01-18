@@ -37,7 +37,7 @@ class DynamicArrayCatalog extends ArrayCatalog
         $content[] = $indent . $indent
           . "'" . addcslashes(stripslashes($optK), "'") . "' => '" . addcslashes(stripslashes($useText), "'") . "',";
       }
-      $content[] = '],';
+      $content[] = $indent . '],';
     }
     $content[] = '];';
     return implode($implode, $content) . PHP_EOL;
