@@ -115,4 +115,27 @@ class PoFile
     }
     return $trans;
   }
+
+  public function removeTranslationByReference(string $ref)
+  {
+    if(isset($this->_translations[$ref]))
+    {
+      unset($this->_translations[$ref]);
+    }
+
+    return $this;
+  }
+
+  public function removeTranslationByMsgId(string $msgId)
+  {
+    foreach($this->_translations as $reference => $translation)
+    {
+      if ($translation->getSingularSource() === $msgId)
+      {
+        unset($this->_translations[$reference]);
+      }
+    }
+
+    return $this;
+  }
 }
