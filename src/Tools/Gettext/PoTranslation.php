@@ -331,7 +331,7 @@ class PoTranslation
    *
    * @return PoTranslation
    */
-  public function setContextStiing(string $context): PoTranslation
+  public function setContextString(string $context): PoTranslation
   {
     $this->_context = $context;
     return $this;
