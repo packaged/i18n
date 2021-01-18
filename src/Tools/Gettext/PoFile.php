@@ -118,10 +118,7 @@ class PoFile
 
   public function removeTranslationByReference(string $ref)
   {
-    if(isset($this->_translations[$ref]))
-    {
-      unset($this->_translations[$ref]);
-    }
+    unset($this->_translations[$ref]);
 
     return $this;
   }
