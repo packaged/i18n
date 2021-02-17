@@ -154,7 +154,7 @@ class PoTranslation
         $append = trim($content);
         $starts = $append[0] === '"';
         $ends = $append[strlen($append) - 1] === '"';
-        $append = substr($append, $starts ? 1 : 0, $ends ? -1 : null) . PHP_EOL;
+        $append = substr($append, $starts ? 1 : 0, $ends ? -1 : null) . ($ends ? '' : PHP_EOL);
         switch($currentCode)
         {
           case 'msgid':
