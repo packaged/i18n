@@ -3,7 +3,7 @@ namespace Packaged\I18n\Translators;
 
 abstract class AbstractTranslator implements Translator
 {
-  protected function _applyReplacements(string $text, array $replacements = null)
+  protected function _applyReplacements(string $text, array $replacements = null): string
   {
     if($replacements === null || empty($replacements))
     {

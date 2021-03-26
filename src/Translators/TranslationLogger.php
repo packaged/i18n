@@ -16,7 +16,7 @@ class TranslationLogger implements Translator
     $this->_translator = $translator;
   }
 
-  public function _($msgId, $default, array $replacements = null, $choice = null)
+  public function _($msgId, $default, array $replacements = null, $choice = null): string
   {
     if(!isset($this->_translations[$msgId]))
     {

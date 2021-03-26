@@ -16,7 +16,7 @@ class WordJumbleTranslator extends AbstractTranslator
     $this->_style = $style;
   }
 
-  public function _($msgId, $default, array $replacements = null, $choice = null)
+  public function _($msgId, $default, array $replacements = null, $choice = null): string
   {
     return $this->_applyReplacements($this->_jumble(Message::fromDefault($default)->getText($choice)), $replacements);
   }

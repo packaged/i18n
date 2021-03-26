@@ -16,7 +16,7 @@ class CatalogTranslator extends AbstractTranslator
     $this->_catalog = $catalog;
   }
 
-  public function _($msgId, $default, array $replacements = null, $choice = null)
+  public function _($msgId, $default, array $replacements = null, $choice = null): string
   {
     $msg = $this->_catalog->getMessage($msgId);
     if($msg === null)
