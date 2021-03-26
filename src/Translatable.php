@@ -11,5 +11,5 @@ interface Translatable
    *
    * @return string
    */
-  public function _($msgId, $default, array $replacements = null, $choice = null): string;
+  public function _($msgId, $default, array $replacements = null, $choice = null);
 }
