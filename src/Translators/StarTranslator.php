@@ -15,7 +15,7 @@ class StarTranslator extends AbstractTranslator
     $this->_replacement = $style;
   }
 
-  public function _($msgId, $default, array $replacements = null, $choice = null): string
+  public function _($msgId, $default, array $replacements = null, $choice = null)
   {
     return $this->_applyReplacements(
       $this->_applyStars(Message::fromDefault($default)->getText($choice)),

@@ -14,7 +14,7 @@ trait TranslatableTrait
     '(o)'  => 'oes',
   ];
 
-  public function _($msgId, $default, array $replacements = null, $choice = null): string
+  public function _($msgId, $default, array $replacements = null, $choice = null)
   {
     return $this->_getTranslator()->_($msgId, $default, $replacements, $choice);
   }
