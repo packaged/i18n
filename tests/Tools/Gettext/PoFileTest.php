@@ -24,10 +24,11 @@ msgstr "Translation 2"
 TRANS;
 
     $translation = PoFile::fromString($source);
+    $translations = $translation->getTranslations();
 
-    self::assertCount(2, $translation->getTranslations());
-    self::assertEquals('Translation 1', $translation->getTranslations()['translation_1_7c7c']->getSingularTranslation());
-    self::assertEquals('Translation 2', $translation->getTranslations()['translation_2_1410']->getSingularTranslation());
+    self::assertCount(2, $translations);
+    self::assertEquals('Translation 1', $translations['translation_1_7c7c']->getSingularTranslation());
+    self::assertEquals('Translation 2', $translations['translation_2_1410']->getSingularTranslation());
   }
 
   public function testIncorrectLineSpacing()
@@ -46,9 +47,10 @@ msgstr "Translation 2"
 TRANS;
 
     $translation = PoFile::fromString($source);
+    $translations = $translation->getTranslations();
 
-    self::assertCount(2, $translation->getTranslations());
-    self::assertEquals('Translation 1', $translation->getTranslations()['translation_1_7c7c']->getSingularTranslation());
-    self::assertEquals('Translation 2', $translation->getTranslations()['translation_2_1410']->getSingularTranslation());
+    self::assertCount(2, $translations);
+    self::assertEquals('Translation 1', $translations['translation_1_7c7c']->getSingularTranslation());
+    self::assertEquals('Translation 2', $translations['translation_2_1410']->getSingularTranslation());
   }
 }
