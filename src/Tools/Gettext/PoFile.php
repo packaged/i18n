@@ -81,6 +81,12 @@ class PoFile
   public static function fromString(string $poContent): ?PoFile
   {
     $trans = new static();
+
+    if(stristr($poContent, "\"\n#."))
+    {
+      $poContent = str_replace("\"\n#.", "\"\n\n#.", $poContent);
+    }
+
     $translations = explode("\n\n", $poContent);
     $matches = [];
     if(preg_match('/\"Language: ([\w_]+).*\"/mi', $poContent, $matches))
