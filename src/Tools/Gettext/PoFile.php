@@ -84,7 +84,8 @@ class PoFile
 
     $startingCases = ['#','msgid'];
 
-    foreach($startingCases as $case) {
+    foreach($startingCases as $case)
+    {
       if(stristr($poContent, "\"\n{$case}"))
       {
         $poContent = str_replace("\"\n{$case}", "\"\n\n{$case}", $poContent);
