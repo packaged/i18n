@@ -81,6 +81,17 @@ class PoFile
   public static function fromString(string $poContent): ?PoFile
   {
     $trans = new static();
+
+    $startingCases = ['#','msgid'];
+
+    foreach($startingCases as $case)
+    {
+      if(stristr($poContent, "\"\n{$case}"))
+      {
+        $poContent = str_replace("\"\n{$case}", "\"\n\n{$case}", $poContent);
+      }
+    }
+
     $translations = explode("\n\n", $poContent);
     $matches = [];
     if(preg_match('/\"Language: ([\w_]+).*\"/mi', $poContent, $matches))
