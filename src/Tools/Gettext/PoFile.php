@@ -82,9 +82,13 @@ class PoFile
   {
     $trans = new static();
 
-    if(stristr($poContent, "\"\n#."))
-    {
-      $poContent = str_replace("\"\n#.", "\"\n\n#.", $poContent);
+    $startingCases = ['#','msgid'];
+
+    foreach($startingCases as $case) {
+      if(stristr($poContent, "\"\n{$case}"))
+      {
+        $poContent = str_replace("\"\n{$case}", "\"\n\n{$case}", $poContent);
+      }
     }
 
     $translations = explode("\n\n", $poContent);
