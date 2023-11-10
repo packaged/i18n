@@ -2,11 +2,19 @@
 
 namespace Packaged\I18n;
 
+use Packaged\I18n\Translators\ReplacementsOnlyTranslator;
 use Packaged\I18n\Translators\Translator;
 
 trait TranslatableTrait
 {
-  abstract protected function _getTranslator(): Translator;
+  protected function _getTranslator(): Translator
+  {
+    if($this instanceof TranslatorAware)
+    {
+      return $this->getTranslator();
+    }
+    return new ReplacementsOnlyTranslator();
+  }
 
   private static $replacements = [
     '(s)'  => 's',
