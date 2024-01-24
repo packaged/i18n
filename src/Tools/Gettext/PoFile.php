@@ -16,9 +16,10 @@ class PoFile
    */
   protected $_translations = [];
 
-  public function __construct($language = null)
+  public function __construct($language = null, $pluralForms = null)
   {
     $this->_setLanguage($language);
+    $this->_setPluralForms($pluralForms);
   }
 
   public function getHeaders()
@@ -138,12 +139,21 @@ class PoFile
   {
     foreach($this->_translations as $reference => $translation)
     {
-      if ($translation->getSingularSource() === $msgId)
+      if($translation->getSingularSource() === $msgId)
       {
         unset($this->_translations[$reference]);
       }
     }
 
+    return $this;
+  }
+
+  protected function _setPluralForms($pluralForms): PoFile
+  {
+    if($pluralForms)
+    {
+      $this->_headers['Plural-Forms'] = $pluralForms;
+    }
     return $this;
   }
 }
