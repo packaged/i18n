@@ -114,4 +114,17 @@ TRANS,
       self::assertEquals('Translation 2', $translations['translation_2_1410']->getSingularTranslation());
     }
   }
+
+  public function testPluralForms()
+  {
+    $translation = new PoFile('en', 'nplurals=2; plural=(n != 1);');
+    $translations = $translation->getTranslations();
+
+    self::assertCount(0, $translations);
+    self::assertEquals('en', $translation->getLanguage());
+    self::assertEquals('nplurals=2; plural=(n != 1);', $translation->getHeaders()['Plural-Forms']);
+
+    $outFile = (string)$translation;
+    self::assertStringContainsString('Plural-Forms: nplurals=2; plural=(n != 1);\n', $outFile);
+  }
 }
