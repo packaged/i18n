@@ -10,18 +10,20 @@ class Translator implements Translatable
   protected Translatable $_translator;
   protected string $_locale = 'en';
 
+  const DEFAULT_LANGUAGE = 'en';
+
   protected static array $_pluralReplacements = [
     '(s)'  => 's',
     '(fe)' => 'ves',
     '(o)'  => 'oes',
   ];
 
-  public static function with(Translatable $translator = null): self
+  public static function with(Translatable $translator = null, string $locale = self::DEFAULT_LANGUAGE): self
   {
     return new static($translator);
   }
 
-  final public function __construct(Translatable $translator = null, string $locale = 'en')
+  final public function __construct(Translatable $translator = null, string $locale = self::DEFAULT_LANGUAGE)
   {
     $this->_translator = $translator ?? new ReplacementsOnlyTranslator();
     $this->_locale = $locale;
