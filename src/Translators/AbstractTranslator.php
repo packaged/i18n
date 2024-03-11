@@ -1,11 +1,13 @@
 <?php
 namespace Packaged\I18n\Translators;
 
-abstract class AbstractTranslator implements Translator
+use Packaged\I18n\Translatable;
+
+abstract class AbstractTranslator implements Translatable
 {
   protected function _applyReplacements(string $text, array $replacements = null): string
   {
-    if($replacements === null || empty($replacements))
+    if(empty($replacements))
     {
       return $text;
     }

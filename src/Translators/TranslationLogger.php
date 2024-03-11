@@ -1,7 +1,9 @@
 <?php
 namespace Packaged\I18n\Translators;
 
-class TranslationLogger implements Translator
+use Packaged\I18n\Translatable;
+
+class TranslationLogger implements Translatable
 {
   protected $_translator;
   protected $_translations = [];

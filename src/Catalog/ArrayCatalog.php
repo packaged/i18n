@@ -3,20 +3,19 @@ namespace Packaged\I18n\Catalog;
 
 class ArrayCatalog implements MessageCatalog
 {
-
-  protected $_data;
+  protected array $_data;
 
   /**
    * ArrayCatalog constructor.
    *
-   * @param $_data
+   * @param array $_data
    */
-  public function __construct($_data)
+  public function __construct(array $_data)
   {
     $this->_data = $_data;
   }
 
-  public static function fromFile($filePath)
+  public static function fromFile(string $filePath): self
   {
     return new static(include($filePath));
   }

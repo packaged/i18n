@@ -3,14 +3,15 @@
 namespace Tests\Translators;
 
 use Packaged\I18n\Translators\ReplacementsOnlyTranslator;
+use Packaged\I18n\Translators\Translator;
 use PHPUnit\Framework\TestCase;
 use Tests\Supporting\TranslatedTextTestClass;
 
-class ReplacementsOnlyTranslatorTest extends TestCase
+class TranslatorTest extends TestCase
 {
-  protected function _getTester()
+  protected function _getTester(): TranslatedTextTestClass
   {
-    return new TranslatedTextTestClass(new ReplacementsOnlyTranslator());
+    return new TranslatedTextTestClass(Translator::with(new ReplacementsOnlyTranslator()));
   }
 
   public function test_()

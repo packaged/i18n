@@ -9,7 +9,7 @@ class CatalogTranslator extends AbstractTranslator
   /**
    * @var MessageCatalog
    */
-  protected $_catalog;
+  protected MessageCatalog $_catalog;
 
   public function __construct(MessageCatalog $catalog)
   {

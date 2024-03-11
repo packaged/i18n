@@ -2,7 +2,9 @@
 
 namespace Packaged\I18n\Translators;
 
-class ReturnKeyTranslator implements Translator
+use Packaged\I18n\Translatable;
+
+class ReturnKeyTranslator implements Translatable
 {
   public function _($msgId, $default, array $replacements = null, $choice = null)
   {
