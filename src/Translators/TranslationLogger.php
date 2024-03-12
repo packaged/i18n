@@ -3,7 +3,7 @@ namespace Packaged\I18n\Translators;
 
 use Packaged\I18n\Translatable;
 
-class TranslationLogger implements Translatable
+class TranslationLogger extends AbstractTranslator
 {
   protected Translatable $_translator;
   protected array $_translations = [];

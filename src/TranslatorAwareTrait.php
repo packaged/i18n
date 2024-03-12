@@ -2,6 +2,7 @@
 
 namespace Packaged\I18n;
 
+use Packaged\I18n\Translators\ReplacementsOnlyTranslator;
 use Packaged\I18n\Translators\Translator;
 
 trait TranslatorAwareTrait
@@ -16,7 +17,7 @@ trait TranslatorAwareTrait
 
   public function getTranslator(): Translator
   {
-    return $this->_translator ?? new Translator();
+    return $this->_translator ?? new ReplacementsOnlyTranslator();
   }
 
   public function hasTranslator(): bool
