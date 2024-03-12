@@ -8,18 +8,18 @@ class DynamicArrayCatalog extends ArrayCatalog
    */
   protected $_translateCallback;
 
-  public function getData()
+  public function getData(): array
   {
     return $this->_data;
   }
 
-  public function addMessage($messageId, array $options = [])
+  public function addMessage(string $messageId, array $options = [])
   {
     $this->_data[$messageId] = $options;
     return $this;
   }
 
-  public function asPhpFile($withNewLines = false): string
+  public function asPhpFile(bool $withNewLines = false): string
   {
     $indent = $withNewLines ? '  ' : '';
     $implode = $withNewLines ? PHP_EOL : '';
@@ -50,7 +50,7 @@ class DynamicArrayCatalog extends ArrayCatalog
    *
    * @return $this
    */
-  public function setTranslationCallback(callable $func)
+  public function setTranslationCallback(callable $func): self
   {
     $this->_translateCallback = $func;
     return $this;

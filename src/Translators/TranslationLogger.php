@@ -1,17 +1,19 @@
 <?php
 namespace Packaged\I18n\Translators;
 
-class TranslationLogger implements Translator
+use Packaged\I18n\Translatable;
+
+class TranslationLogger implements Translatable
 {
-  protected $_translator;
-  protected $_translations = [];
+  protected Translatable $_translator;
+  protected array $_translations = [];
 
   const KEY_USAGES = 'usages';
   const KEY_DEFAULT = 'default';
   const KEY_CHOICES = 'choices';
   const KEY_REPLACEMENTS = 'replacements';
 
-  public function __construct(Translator $translator)
+  public function __construct(Translatable $translator)
   {
     $this->_translator = $translator;
   }

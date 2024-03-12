@@ -9,7 +9,7 @@ class Message
   /**
    * @var array
    */
-  protected $_options;
+  protected array $_options;
 
   protected $_choice;
   protected $_choiceNumeric;
@@ -47,13 +47,13 @@ class Message
     return $this->_options[self::META_OPTION] ?? [];
   }
 
-  public function addOption($key, $value)
+  public function addOption($key, $value): self
   {
     $this->_options[$key] = $value;
     return $this;
   }
 
-  public function getOptions()
+  public function getOptions(): array
   {
     return $this->_options;
   }
@@ -99,7 +99,7 @@ class Message
     return $return;
   }
 
-  protected function _choiceMatches($optionKey)
+  protected function _choiceMatches($optionKey): bool
   {
     if($optionKey === '' || ($this->_choiceNumeric && $optionKey === 'n')
       || $optionKey === $this->_choice)
