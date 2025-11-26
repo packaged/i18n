@@ -6,20 +6,20 @@ class Message
   const DEFAULT_OPTION = '_';
   const META_OPTION = '__meta';
 
-  /**
-   * @var array
-   */
+  /** @var array<string, string|array<string>> */
   protected array $_options;
-
-  protected $_choice;
-  protected $_choiceNumeric;
+  /**
+   * @var string|int|null
+   */
+  protected $_choice = null;
+  protected ?bool $_choiceNumeric = null;
 
   public function __construct(array $options = [])
   {
     $this->_options = $options;
   }
 
-  public static function fromDefault($default)
+  public static function fromDefault($default): self
   {
     if(is_array($default))
     {
@@ -29,7 +29,8 @@ class Message
     if(is_scalar($default))
     {
       $matches = [];
-      preg_match_all('/((\[[^\]]+\])?([^\|]+))+/m', $default, $matches);
+      preg_match_all('/((\[[^\]]+\])?([^\|]+))+/m', (string)$default, $matches);
+      /** @phpstan-ignore isset.offset */
       if(isset($matches[3]))
       {
         foreach($matches[2] as $i => $key)
@@ -42,9 +43,11 @@ class Message
     return $msg;
   }
 
+  /** @return string[] */
   public function getMeta(): array
   {
-    return $this->_options[self::META_OPTION] ?? [];
+    return isset($this->_options[self::META_OPTION]) && is_array($this->_options[self::META_OPTION])
+      ? $this->_options[self::META_OPTION] : [];
   }
 
   public function addOption($key, $value): self
@@ -53,12 +56,13 @@ class Message
     return $this;
   }
 
+  /** @return array<string, string|array<string>> */
   public function getOptions(): array
   {
     return $this->_options;
   }
 
-  protected function _setChoice($choice = null)
+  protected function _setChoice($choice = null): void
   {
     if($choice === null)
     {
@@ -86,17 +90,18 @@ class Message
       if($key === self::DEFAULT_OPTION)
       {
         $return = $v;
-        if($this->_choice === null)
+        if($this->_choice === null && is_string($return))
         {
           return $return;
         }
       }
       else if($this->_choiceMatches($key))
       {
-        return $v;
+        return is_string($v) ? $v : '';
       }
     }
-    return $return;
+
+    return is_string($return) ? $return : '';
   }
 
   protected function _choiceMatches($optionKey): bool
@@ -111,10 +116,11 @@ class Message
     {
       if($this->_choiceNumeric)
       {
-        if($key === 'n' || ((is_int($key) || ctype_digit($key)) && (int)$key === $this->_choice))
+        if($key === 'n' || ((ctype_digit($key)) && (int)$key === $this->_choice))
         {
           return true;
         }
+
         if(strpos($key, '..') > 0)
         {
           [$min, $max] = explode('..', $key);

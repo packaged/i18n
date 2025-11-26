@@ -4,16 +4,24 @@ namespace Packaged\I18n\Catalog;
 class DynamicArrayCatalog extends ArrayCatalog
 {
   /**
-   * @var callable
+   * @var ?callable
    */
-  protected $_translateCallback;
+  protected $_translateCallback = null;
 
+  /**
+   * @var array<string, array<string, string>>
+   */
+  protected array $_data;
+
+  /**
+   * @return array<string, array<string, string>>
+   */
   public function getData(): array
   {
     return $this->_data;
   }
 
-  public function addMessage(string $messageId, array $options = [])
+  public function addMessage(string $messageId, array $options = []): self
   {
     $this->_data[$messageId] = $options;
     return $this;
@@ -26,7 +34,7 @@ class DynamicArrayCatalog extends ArrayCatalog
 
     $content = ['<?php', PHP_EOL, 'return ['];
 
-    $callback = $this->_translateCallback;
+    $callback = $this->_translateCallback ?? null;
 
     foreach($this->getData() as $mid => $options)
     {

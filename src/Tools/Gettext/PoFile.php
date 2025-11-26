@@ -3,8 +3,9 @@ namespace Packaged\I18n\Tools\Gettext;
 
 class PoFile
 {
-  protected $_language;
-  protected $_headers = [
+  protected ?string $_language;
+  /** @var array<string, string> */
+  protected array $_headers = [
     'MIME-Version'              => '1.0',
     'Content-Type'              => 'text/plain; charset=UTF-8',
     'Content-Transfer-Encoding' => '8bit',
@@ -14,7 +15,7 @@ class PoFile
   /**
    * @var PoTranslation[]
    */
-  protected $_translations = [];
+  protected array $_translations = [];
 
   public function __construct($language = null, $pluralForms = null)
   {
@@ -22,24 +23,25 @@ class PoFile
     $this->_setPluralForms($pluralForms);
   }
 
-  public function getHeaders()
+  /** @return array<string, string> */
+  public function getHeaders(): array
   {
     return $this->_headers;
   }
 
-  protected function _setLanguage($lang)
+  protected function _setLanguage($lang): self
   {
     $this->_language = $lang;
     $this->_headers['Language'] = $this->_language;
     return $this;
   }
 
-  public function getLanguage()
+  public function getLanguage(): string
   {
     return $this->_language;
   }
 
-  public function addTranslation(PoTranslation ...$translations)
+  public function addTranslation(PoTranslation ...$translations): self
   {
     foreach($translations as $translation)
     {
@@ -53,7 +55,8 @@ class PoFile
     return $this->_translations[$id] ?? null;
   }
 
-  public function getTranslations()
+  /** @return PoTranslation[] */
+  public function getTranslations(): array
   {
     return $this->_translations;
   }
@@ -83,11 +86,11 @@ class PoFile
   {
     $trans = new static();
 
-    $startingCases = ['#','msgid'];
+    $startingCases = ['#', 'msgid'];
 
-    foreach($startingCases as $case)
+    foreach ($startingCases as $case)
     {
-      if(stristr($poContent, "\"\n{$case}"))
+      if (stristr($poContent, "\"\n{$case}"))
       {
         $poContent = str_replace("\"\n{$case}", "\"\n\n{$case}", $poContent);
       }
@@ -95,20 +98,20 @@ class PoFile
 
     $translations = explode("\n\n", $poContent);
     $matches = [];
-    if(preg_match('/\"Language: ([\w_]+).*\"/mi', $poContent, $matches))
+    if (preg_match('/\"Language: ([\w_]+).*\"/mi', $poContent, $matches))
     {
       $trans->_language = $matches[1];
     }
-    foreach($translations as $translation)
+    foreach ($translations as $translation)
     {
-      if(substr($translation, 0, 18) == 'msgid ""' . "\n" . 'msgstr ""')
+      if (substr($translation, 0, 18) == 'msgid ""' . "\n" . 'msgstr ""')
       {
         $trans->_headers = [];
         $headers = explode("\n", substr($translation, 18));
-        foreach($headers as $header)
+        foreach ($headers as $header)
         {
           $header = trim($header, '"');
-          if($header)
+          if ($header)
           {
             [$hk, $hv] = explode(':', substr($header, -2) == '\n' ? substr($header, 0, -2) : $header, 2);
             $trans->_headers[$hk] = trim($hv);
@@ -119,23 +122,24 @@ class PoFile
       else
       {
         $converted = PoTranslation::fromString(trim($translation));
-        if($converted !== null)
+        if ($converted !== null)
         {
           $trans->addTranslation($converted);
         }
       }
     }
+
     return $trans;
   }
 
-  public function removeTranslationByReference(string $ref)
+  public function removeTranslationByReference(string $ref): self
   {
     unset($this->_translations[$ref]);
 
     return $this;
   }
 
-  public function removeTranslationByMsgId(string $msgId)
+  public function removeTranslationByMsgId(string $msgId): self
   {
     foreach($this->_translations as $reference => $translation)
     {
@@ -148,7 +152,7 @@ class PoFile
     return $this;
   }
 
-  protected function _setPluralForms($pluralForms): PoFile
+  protected function _setPluralForms($pluralForms): self
   {
     if($pluralForms)
     {

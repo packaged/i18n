@@ -1,0 +1,57 @@
+name: pr
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
+
+jobs:
+  phpstan-phpunit:
+    name: PHP Tests
+    strategy:
+      matrix:
+        php: [ '7.4', '8.3', '8.5' ]
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Git Checkout
+        uses: actions/checkout@v3
+      - run: echo "The ${{ github.repository }} repository has been cloned to the runner."
+
+      - name: Composer install
+        uses: php-actions/composer@v6
+        with:
+          php_version: ${{matrix.php}}
+      - run: echo "Composer dependencies have been installed"
+
+      - name: Code Scanning
+        id: code-scanning
+        uses: php-actions/phpstan@v3
+        with:
+          php_version: ${{matrix.php}}
+          path: src/
+          configuration: "phpstan.neon"
+          memory_limit: "768M"
+      - run: echo "Stan tests complete"
+
+      - name: Unit Tests
+        id: unit-tests
+        uses: php-actions/phpunit@v3
+        env:
+          CREATE_SNAPSHOTS: false
+        with:
+          version: 9.6.29
+          php_version: ${{matrix.php}}
+          configuration: "phpunit.xml"
+          memory_limit: "768M"
+
+      - run: echo "Unit tests complete"
+
+    outputs:
+      code-scanning-status: ${{ steps.code-scanning.outcome }}
+      unit-tests-status: ${{ steps.unit-tests.outcome }}

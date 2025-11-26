@@ -3,6 +3,9 @@ namespace Packaged\I18n\Catalog;
 
 class ArrayCatalog implements MessageCatalog
 {
+  /**
+   * @var array<string, string|array<string, string>>
+   */
   protected array $_data;
 
   /**
@@ -28,8 +31,10 @@ class ArrayCatalog implements MessageCatalog
       {
         $this->_data[$messageId] = [Message::DEFAULT_OPTION => $this->_data[$messageId]];
       }
+
       return new Message($this->_data[$messageId]);
     }
+
     return null;
   }
 }

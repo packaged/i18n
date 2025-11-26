@@ -9,19 +9,19 @@ class WordJumbleTranslator extends AbstractTranslator
   const STYLE_SORT = 'sort';
   const STYLE_SHUFFLE = 'shuffle';
 
-  protected $_style;
+  protected string $_style;
 
-  public function __construct($style = self::STYLE_SHUFFLE)
+  public function __construct(string $style = self::STYLE_SHUFFLE)
   {
     $this->_style = $style;
   }
 
-  public function _($msgId, $default, array $replacements = null, $choice = null): string
+  public function _(string $msgId, $default, array $replacements = null, $choice = null): string
   {
     return $this->_applyReplacements($this->_jumble(Message::fromDefault($default)->getText($choice)), $replacements);
   }
 
-  protected function _jumble($text)
+  protected function _jumble(string $text): string
   {
     return preg_replace_callback(
       '/(?!\{)\b(\w+)\b(?!\})/',

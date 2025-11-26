@@ -9,13 +9,14 @@
     }
   ],
   "require": {
-    "php": ">=7.4",
+    "php": "^7.4|^8.0",
     "packaged/helpers": "~1.0||^2.0",
     "ext-ctype": "*"
   },
   "require-dev": {
     "ext-gettext": "*",
-    "phpunit/phpunit": "9.5.*"
+    "phpunit/phpunit": "^9.6",
+    "phpstan/phpstan": "^2.1"
   },
   "suggest": {
     "ext-gettext": "*"

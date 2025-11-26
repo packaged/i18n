@@ -1,0 +1,11 @@
+parameters:
+  level: 7
+  paths:
+    - src
+  ignoreErrors:
+    -
+      identifiers:
+        - trait.unused
+    - "#^Unsafe usage of new static#"
+    - '#^Method [a-zA-Z0-9\\$\\_\\\\:\\(\\)]+ has parameter [a-zA-Z0-9\\$\\_\\\\:\\(\\)]+ with no value type specified in iterable type array\.$#'
+    - '#^Method [a-zA-Z0-9\\$\\_\\\\:\\(\\)]+ has parameter [a-zA-Z0-9\\$\\_\\\\:\\(\\)]+ with no type specified\.$#'

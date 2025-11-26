@@ -8,9 +8,9 @@ class StarTranslator extends AbstractTranslator
   const CHAR_STAR = '*';
   const CHAR_HASH = '#';
 
-  protected $_replacement;
+  protected string $_replacement = self::CHAR_STAR;
 
-  public function __construct($style = self::CHAR_STAR)
+  public function __construct(string $style = self::CHAR_STAR)
   {
     $this->_replacement = $style;
   }
@@ -23,7 +23,7 @@ class StarTranslator extends AbstractTranslator
     );
   }
 
-  protected function _applyStars($text)
+  protected function _applyStars($text): string
   {
     return preg_replace_callback(
       '/(?!\{)\b(\w+)\b(?!\})/',

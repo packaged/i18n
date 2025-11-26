@@ -6,30 +6,38 @@ use Packaged\I18n\Tools\TextIDGenerator;
 class PoTranslation
 {
   const FLAG_FUZZY = 'fuzzy';
-
-  protected $_previous = [];
-  protected $_id = '';
-  protected $_comments = [];
-  protected $_flags = [];
-  protected $_references = [];
-  protected $_extractedComments = [];
-  protected $_context = '';
-  protected $_singularSource = '';
-  protected $_pluralSource = '';
-  protected $_singularTranslation = '';
-  protected $_pluralTranslation = '';
-  protected $_additionalPluralTranslations = [];
+  /** @var string[] */
+  protected array $_previous = [];
+  protected string $_id = '';
+  /** @var string[] */
+  protected array $_comments = [];
+  /** @var string[] */
+  protected array $_flags = [];
+  /** @var string[] */
+  protected array $_references = [];
+  /** @var string[] */
+  protected array $_extractedComments = [];
+  protected string $_context = '';
+  protected string $_singularSource = '';
+  protected string $_pluralSource = '';
+  protected string $_singularTranslation = '';
+  protected string $_pluralTranslation = '';
+  /**
+   * @var array<string, string>
+   */
+  protected array $_additionalPluralTranslations = [];
 
   public function __construct($id)
   {
     $this->_id = $id;
   }
 
-  public function getId()
+  public function getId(): string
   {
     return $this->_id;
   }
 
+  /** @return string[] */
   public function getContent(): array
   {
     $lines = [];
@@ -89,12 +97,12 @@ class PoTranslation
     return $lines;
   }
 
-  public function __toString()
+  public function __toString(): string
   {
     return implode(PHP_EOL, $this->getContent());
   }
 
-  protected function _slash($text)
+  protected function _slash($text): string
   {
     $text = trim(addcslashes(stripslashes($text), '"'));
     if(strpos($text, "\n") > 0)
@@ -109,16 +117,17 @@ class PoTranslation
     $translation = new static('');
     $lines = explode("\n", $translationString);
     $currentCode = '';
-    foreach($lines as $line)
+    foreach ($lines as $line)
     {
       $line = trim($line);
-      if($line[0] == '#')
+
+      if ($line != '' && $line[0] == '#')
       {
-        if(!isset($line[1]))
+        if (strlen($line) < 2)
         {
           continue;
         }
-        switch($line[1])
+        switch ($line[1])
         {
           case '.':
             $translation->_extractedComments[] = trim(substr($line, 2));
@@ -142,20 +151,35 @@ class PoTranslation
       }
       else
       {
+        $content = '';
+
         //Assume continuation
-        if($line[0] == '"')
+        if ($line != '' && $line[0] == '"')
         {
           $content = $line;
         }
         else
         {
-          [$currentCode, $content] = explode(" ", $line, 2);
+          $elements = explode(" ", $line, 2);
+
+          if (count($elements) > 1)
+          {
+            $currentCode = array_shift($elements);
+            $content = array_shift($elements) ?: '';
+          }
         }
+
         $append = trim($content);
+
+        if ($append == '')
+        {
+          continue;
+        }
+
         $starts = $append[0] === '"';
         $ends = $append[strlen($append) - 1] === '"';
         $append = substr($append, $starts ? 1 : 0, $ends ? -1 : null) . ($ends ? '' : PHP_EOL);
-        switch($currentCode)
+        switch ($currentCode)
         {
           case 'msgid':
             $translation->_singularSource .= $append;
@@ -174,10 +198,10 @@ class PoTranslation
             $translation->_context .= $append;
             break;
           default:
-            if(substr($currentCode, 0, 7) == 'msgstr[')
+            if (substr($currentCode, 0, 7) == 'msgstr[')
             {
-              $codeKey = rtrim(substr($currentCode, 7, ']'));
-              if(!isset($translation->_additionalPluralTranslations[$codeKey]))
+              $codeKey = rtrim(substr($currentCode, 7), ']');
+              if (!isset($translation->_additionalPluralTranslations[$codeKey]))
               {
                 $translation->_additionalPluralTranslations[$codeKey] = '';
               }
@@ -192,19 +216,19 @@ class PoTranslation
     $translation->_pluralTranslation = rtrim($translation->_pluralTranslation);
     $translation->_pluralSource = rtrim($translation->_pluralSource);
     $translation->_context = rtrim($translation->_context);
-    foreach($translation->_additionalPluralTranslations as $k => $v)
+    foreach ($translation->_additionalPluralTranslations as $k => $v)
     {
       $translation->_additionalPluralTranslations[$k] = rtrim($v);
     }
 
-    if(!empty($translation->_references))
+    if (!empty($translation->_references))
     {
       $translation->_id = $translation->_references[0];
     }
 
-    if(empty($translation->_id) && $translation->_singularSource)
+    if (empty($translation->_id) && $translation->_singularSource)
     {
-      if(strpos($translation->_singularSource, " ") > -1)
+      if (strpos($translation->_singularSource, " ") > -1)
       {
         $translation->_id = TextIDGenerator::generate($translation->_singularSource);
       }
@@ -217,9 +241,7 @@ class PoTranslation
     return $translation->_id !== '' ? $translation : null;
   }
 
-  /**
-   * @return array
-   */
+  /** @return string[] */
   public function getComments(): array
   {
     return $this->_comments;
@@ -236,9 +258,7 @@ class PoTranslation
     return $this;
   }
 
-  /**
-   * @return array
-   */
+  /** @return string[] */
   public function getReferences(): array
   {
     return $this->_references;
@@ -255,9 +275,7 @@ class PoTranslation
     return $this;
   }
 
-  /**
-   * @return array
-   */
+  /** @return string[] */
   public function getExtractedComments(): array
   {
     return $this->_extractedComments;
@@ -313,14 +331,12 @@ class PoTranslation
     return isset($this->_flags[$flag]);
   }
 
+  /** @return string[] */
   public function getFlags(): array
   {
     return $this->_flags;
   }
 
-  /**
-   * @return string
-   */
   public function getContextString(): string
   {
     return $this->_context;
@@ -414,7 +430,7 @@ class PoTranslation
   }
 
   /**
-   * @return array
+   * @return array<string, string>
    */
   public function getAdditionalPluralTranslations(): array
   {

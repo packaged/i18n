@@ -10,7 +10,7 @@ class ReverseTranslator extends AbstractTranslator
     return $this->_applyReplacements($this->_reverse(Message::fromDefault($default)->getText($choice)), $replacements);
   }
 
-  protected function _reverse($text)
+  protected function _reverse($text): string
   {
     return preg_replace_callback('/(?!\{)\b(\w+)\b(?!\})/', function ($str) { return strrev($str[0]); }, $text);
   }

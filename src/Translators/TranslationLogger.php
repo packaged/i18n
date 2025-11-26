@@ -6,6 +6,8 @@ use Packaged\I18n\Translatable;
 class TranslationLogger extends AbstractTranslator
 {
   protected Translatable $_translator;
+
+  /** @var array<string, array<string, mixed>> */
   protected array $_translations = [];
 
   const KEY_USAGES = 'usages';
@@ -18,7 +20,7 @@ class TranslationLogger extends AbstractTranslator
     $this->_translator = $translator;
   }
 
-  public function _($msgId, $default, array $replacements = null, $choice = null): string
+  public function _(string $msgId, $default, array $replacements = null, $choice = null): string
   {
     if(!isset($this->_translations[$msgId]))
     {
@@ -35,6 +37,7 @@ class TranslationLogger extends AbstractTranslator
     {
       $this->_translations[$msgId][static::KEY_REPLACEMENTS] = true;
     }
+
     if($choice !== null)
     {
       $this->_translations[$msgId][static::KEY_CHOICES][] = $choice;
@@ -43,7 +46,10 @@ class TranslationLogger extends AbstractTranslator
     return $this->_translator->_($msgId, $default, $replacements, $choice);
   }
 
-  public function getTranslations()
+  /**
+   * @return array<string, array<string, mixed>>
+   */
+  public function getTranslations(): array
   {
     return $this->_translations;
   }

@@ -6,7 +6,15 @@ use Packaged\I18n\Translatable;
 
 interface Translator extends Translatable
 {
-  public function _($msgId, $default, array $replacements = null, $choice = null): string;
+  /**
+   * @param string     $msgId
+   * @param            $default
+   * @param array|null $replacements
+   * @param mixed      $choice
+   *
+   * @return string
+   */
+  public function _(string $msgId, $default, array $replacements = null, $choice = null): string;
 
   public function _p(string $msgId, string $singular, string $plural, int $n, array $replacements = null): string;
 

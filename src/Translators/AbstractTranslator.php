@@ -18,6 +18,7 @@ abstract class AbstractTranslator implements Translator
     return $text;
   }
 
+  /** @var array<string, string> */
   protected static array $_pluralReplacements = [
     '(s)'  => 's',
     '(fe)' => 'ves',
