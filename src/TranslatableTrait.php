@@ -22,17 +22,17 @@ trait TranslatableTrait
     '(o)'  => 'oes',
   ];
 
-  public function _($msgId, $default, array $replacements = null, $choice = null)
+  public function _($msgId, $default, ?array $replacements = null, $choice = null)
   {
     return $this->_getTranslator()->_($msgId, $default, $replacements, $choice);
   }
 
-  public function _t($text, array $replacements = null, $choice = null)
+  public function _t($text, ?array $replacements = null, $choice = null)
   {
     return $this->_getTranslator()->_(md5($text), $text, $replacements, $choice);
   }
 
-  public function _p($singular, $plural, int $n, array $replacements = null)
+  public function _p($singular, $plural, int $n, ?array $replacements = null)
   {
     return $this->_getTranslator()->_(
       md5($singular . $plural),
@@ -49,7 +49,7 @@ trait TranslatableTrait
    *
    * @return mixed
    */
-  public function _sp($simplePlural, int $n, array $replacements = null)
+  public function _sp($simplePlural, int $n, ?array $replacements = null)
   {
     return $this->_p(
       str_replace(array_keys(static::$replacements), '', $simplePlural),

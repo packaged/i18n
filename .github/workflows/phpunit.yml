@@ -1,0 +1,33 @@
+name: PHPUnit
+
+on:
+  push:
+    branches: [ v1 ]
+  pull_request:
+    branches: [ v1 ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [ '7.4', '8.0', '8.1', '8.2', '8.3', '8.4', '8.5' ]
+
+    name: PHP ${{ matrix.php }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: gettext
+
+      - name: Install dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
+
+      - name: Run PHPUnit
+        run: vendor/bin/phpunit
