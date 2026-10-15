@@ -104,13 +104,20 @@ class PoFile
       if(substr($translation, 0, 18) == 'msgid ""' . "\n" . 'msgstr ""')
       {
         $trans->_headers = [];
-        $headers = explode("\n", substr($translation, 18));
-        foreach($headers as $header)
+        $headerBlock = '';
+        foreach(explode("\n", substr($translation, 18)) as $line)
         {
-          $header = trim($header, '"');
-          if($header)
+          $line = trim($line);
+          if(substr($line, 0, 1) === '"' && substr($line, -1) === '"' && strlen($line) > 1)
           {
-            [$hk, $hv] = explode(':', substr($header, -2) == '\n' ? substr($header, 0, -2) : $header, 2);
+            $headerBlock .= substr($line, 1, -1);
+          }
+        }
+        foreach(explode('\n', $headerBlock) as $header)
+        {
+          if(strpos($header, ':') !== false)
+          {
+            [$hk, $hv] = explode(':', $header, 2);
             $trans->_headers[$hk] = trim($hv);
           }
         }
