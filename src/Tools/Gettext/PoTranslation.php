@@ -96,12 +96,12 @@ class PoTranslation
 
   protected function _slash($text)
   {
-    $text = trim(addcslashes(stripslashes($text), '"'));
-    if(strpos($text, "\n") > 0)
+    $lines = explode("\n", trim($text));
+    foreach($lines as $i => $line)
     {
-      return implode('"' . PHP_EOL . '"', explode("\n", $text));
+      $lines[$i] = addcslashes($line, "\\\"\r\t\v\f");
     }
-    return $text;
+    return implode('\n"' . PHP_EOL . '"', $lines);
   }
 
   public static function fromString(string $translationString): ?PoTranslation
@@ -154,7 +154,7 @@ class PoTranslation
         $append = trim($content);
         $starts = $append[0] === '"';
         $ends = $append[strlen($append) - 1] === '"';
-        $append = substr($append, $starts ? 1 : 0, $ends ? -1 : null) . ($ends ? '' : PHP_EOL);
+        $append = stripcslashes(substr($append, $starts ? 1 : 0, $ends ? -1 : null)) . ($ends ? '' : PHP_EOL);
         switch($currentCode)
         {
           case 'msgid':
