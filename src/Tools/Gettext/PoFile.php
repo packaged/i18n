@@ -66,7 +66,7 @@ class PoFile
 
     foreach($this->_headers as $hk => $hv)
     {
-      $file[] = '"' . $hk . ': ' . $hv . '\n"';
+      $file[] = '"' . addcslashes($hk . ': ' . $hv, "\\\"") . '\n"';
     }
 
     $file[] = '';
@@ -102,10 +102,10 @@ class PoFile
           $line = trim($line);
           if(substr($line, 0, 1) === '"' && substr($line, -1) === '"' && strlen($line) > 1)
           {
-            $headerBlock .= substr($line, 1, -1);
+            $headerBlock .= stripcslashes(substr($line, 1, -1));
           }
         }
-        foreach(explode('\n', $headerBlock) as $header)
+        foreach(explode("\n", $headerBlock) as $header)
         {
           if(strpos($header, ':') !== false)
           {
