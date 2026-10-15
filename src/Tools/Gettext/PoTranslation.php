@@ -176,7 +176,7 @@ class PoTranslation
           default:
             if(substr($currentCode, 0, 7) == 'msgstr[')
             {
-              $codeKey = rtrim(substr($currentCode, 7, ']'));
+              $codeKey = rtrim(substr($currentCode, 7), ']');
               if(!isset($translation->_additionalPluralTranslations[$codeKey]))
               {
                 $translation->_additionalPluralTranslations[$codeKey] = '';
