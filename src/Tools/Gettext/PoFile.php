@@ -83,15 +83,7 @@ class PoFile
   {
     $trans = new static();
 
-    $startingCases = ['#','msgid'];
-
-    foreach($startingCases as $case)
-    {
-      if(stristr($poContent, "\"\n{$case}"))
-      {
-        $poContent = str_replace("\"\n{$case}", "\"\n\n{$case}", $poContent);
-      }
-    }
+    $poContent = static::_separateEntries($poContent);
 
     $translations = explode("\n\n", $poContent);
     $matches = [];
@@ -133,6 +125,34 @@ class PoFile
       }
     }
     return $trans;
+  }
+
+  /**
+   * @param string $poContent
+   *
+   * @return string
+   */
+  protected static function _separateEntries(string $poContent): string
+  {
+    $lines = [];
+    $inMsgstr = false;
+
+    foreach(explode("\n", $poContent) as $line)
+    {
+      $trimmed = trim($line);
+      $isString = substr($trimmed, 0, 1) === '"';
+      $isMsgstr = substr($trimmed, 0, 6) === 'msgstr';
+
+      if($inMsgstr && $trimmed !== '' && !$isString && !$isMsgstr)
+      {
+        $lines[] = '';
+      }
+
+      $inMsgstr = $isMsgstr || ($inMsgstr && $isString);
+      $lines[] = $line;
+    }
+
+    return implode("\n", $lines);
   }
 
   public function removeTranslationByReference(string $ref)
