@@ -57,4 +57,78 @@ TRANS;
     self::assertEquals(['keeping_data_safe_secure_esse_3fc248_130'], $translation->getReferences());
     self::assertTrue($translation->hasFlag(PoTranslation::FLAG_FUZZY));
   }
+
+  public function testWrappedMsgidAndMsgstr()
+  {
+    $source = <<<TRANS
+# Kept the platform names untranslated.
+#: compatible_with_chrome_edge_a1b2c3_101
+#,  echo-lingua-processed echo-lingua-translation
+msgid ""
+"Compatible with Chrome, Edge, Safari, iOS{iosMinimum}, "
+"Android{androidMinimum}, Windows, and macOS. Feature availability may vary "
+"by platform and OS version."
+msgstr ""
+"Compatible avec Chrome, Edge, Safari, iOS{iosMinimum}, "
+"Android{androidMinimum}, Windows et macOS. La disponibilité des fonctions "
+"peut varier selon la plateforme."
+TRANS;
+
+    $translation = PoTranslation::fromString($source);
+
+    self::assertEquals(
+      'Compatible with Chrome, Edge, Safari, iOS{iosMinimum}, Android{androidMinimum}, Windows, and macOS. '
+      . 'Feature availability may vary by platform and OS version.',
+      $translation->getSingularSource()
+    );
+    self::assertEquals(
+      'Compatible avec Chrome, Edge, Safari, iOS{iosMinimum}, Android{androidMinimum}, Windows et macOS. '
+      . 'La disponibilité des fonctions peut varier selon la plateforme.',
+      $translation->getSingularTranslation()
+    );
+    self::assertEquals(['Kept the platform names untranslated.'], $translation->getComments());
+    self::assertEquals('compatible_with_chrome_edge_a1b2c3_101', $translation->getId());
+    self::assertTrue($translation->hasFlag('echo-lingua-processed echo-lingua-translation'));
+  }
+
+  public function testEscapeRoundTrip()
+  {
+    $source = <<<'TRANS'
+#: escaped_ref
+msgid "Say \"hi\" to C:\\new\n"
+"next line"
+msgstr "Dis \"salut\" à C:\\new\nligne suivante"
+TRANS;
+
+    $translation = PoTranslation::fromString($source);
+
+    self::assertEquals("Say \"hi\" to C:\\new\nnext line", $translation->getSingularSource());
+    self::assertEquals("Dis \"salut\" à C:\\new\nligne suivante", $translation->getSingularTranslation());
+
+    $written = (string)$translation;
+    self::assertStringContainsString('msgid "Say \"hi\" to C:\\\\new\n"' . PHP_EOL . '"next line"', $written);
+    self::assertStringContainsString('msgstr "Dis \"salut\" à C:\\\\new\n"' . PHP_EOL . '"ligne suivante"', $written);
+
+    $reread = PoTranslation::fromString($written);
+    self::assertEquals($translation->getSingularSource(), $reread->getSingularSource());
+    self::assertEquals($translation->getSingularTranslation(), $reread->getSingularTranslation());
+  }
+
+  public function testAdditionalPluralTranslations()
+  {
+    $source = <<<TRANS
+#: file_count
+msgid "One file"
+msgid_plural "Many files"
+msgstr[0] "Jeden plik"
+msgstr[1] "Pliki"
+msgstr[2] "Plików"
+TRANS;
+
+    $translation = PoTranslation::fromString($source);
+
+    self::assertEquals('Many files', $translation->getPluralSource());
+    self::assertEquals(['2' => 'Plików'], $translation->getAdditionalPluralTranslations());
+    self::assertStringContainsString('msgstr[2] "Plików"', (string)$translation);
+  }
 }
