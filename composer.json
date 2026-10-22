@@ -15,7 +15,7 @@
   },
   "require-dev": {
     "ext-gettext": "*",
-    "phpunit/phpunit": "9.5.*"
+    "phpunit/phpunit": "^9.6"
   },
   "suggest": {
     "ext-gettext": "*"
