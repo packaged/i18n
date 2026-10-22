@@ -66,7 +66,7 @@ class PoFile
 
     foreach($this->_headers as $hk => $hv)
     {
-      $file[] = '"' . $hk . ': ' . $hv . '\n"';
+      $file[] = '"' . addcslashes($hk . ': ' . $hv, "\\\"") . '\n"';
     }
 
     $file[] = '';
@@ -83,15 +83,7 @@ class PoFile
   {
     $trans = new static();
 
-    $startingCases = ['#','msgid'];
-
-    foreach($startingCases as $case)
-    {
-      if(stristr($poContent, "\"\n{$case}"))
-      {
-        $poContent = str_replace("\"\n{$case}", "\"\n\n{$case}", $poContent);
-      }
-    }
+    $poContent = static::_separateEntries($poContent);
 
     $translations = explode("\n\n", $poContent);
     $matches = [];
@@ -104,13 +96,20 @@ class PoFile
       if(substr($translation, 0, 18) == 'msgid ""' . "\n" . 'msgstr ""')
       {
         $trans->_headers = [];
-        $headers = explode("\n", substr($translation, 18));
-        foreach($headers as $header)
+        $headerBlock = '';
+        foreach(explode("\n", substr($translation, 18)) as $line)
         {
-          $header = trim($header, '"');
-          if($header)
+          $line = trim($line);
+          if(substr($line, 0, 1) === '"' && substr($line, -1) === '"' && strlen($line) > 1)
           {
-            [$hk, $hv] = explode(':', substr($header, -2) == '\n' ? substr($header, 0, -2) : $header, 2);
+            $headerBlock .= stripcslashes(substr($line, 1, -1));
+          }
+        }
+        foreach(explode("\n", $headerBlock) as $header)
+        {
+          if(strpos($header, ':') !== false)
+          {
+            [$hk, $hv] = explode(':', $header, 2);
             $trans->_headers[$hk] = trim($hv);
           }
         }
@@ -126,6 +125,34 @@ class PoFile
       }
     }
     return $trans;
+  }
+
+  /**
+   * @param string $poContent
+   *
+   * @return string
+   */
+  protected static function _separateEntries(string $poContent): string
+  {
+    $lines = [];
+    $inMsgstr = false;
+
+    foreach(explode("\n", $poContent) as $line)
+    {
+      $trimmed = trim($line);
+      $isString = substr($trimmed, 0, 1) === '"';
+      $isMsgstr = substr($trimmed, 0, 6) === 'msgstr';
+
+      if($inMsgstr && $trimmed !== '' && !$isString && !$isMsgstr)
+      {
+        $lines[] = '';
+      }
+
+      $inMsgstr = $isMsgstr || ($inMsgstr && $isString);
+      $lines[] = $line;
+    }
+
+    return implode("\n", $lines);
   }
 
   public function removeTranslationByReference(string $ref)
